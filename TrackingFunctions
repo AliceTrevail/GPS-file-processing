@@ -1,0 +1,54 @@
+## Packages #####
+
+
+if(!"sp" %in% installed.packages())
+  install.packages("sp")
+library(sp)
+
+if(!"trip" %in% installed.packages())
+  install.packages("trip")
+library(trip)
+
+if(!"maptools" %in% installed.packages())
+  install.packages("maptools")
+library(maptools)
+
+if(!"plyr" %in% installed.packages())
+  install.packages("plyr")
+library(plyr)
+
+if(!"tidyr" %in% installed.packages())
+  install.packages("tidyr")
+library(tidyr)
+
+
+### ********* ####
+### Functions ####
+
+###Speed #####
+
+# calculates speed for point as speed from last GPS fix
+# first speed allocated zero
+
+between.point.distance <- function(x){
+  trip.matrix <- data.matrix(x[,c("Longitude","Latitude")], 
+                             rownames.force = NA)           #creates two column matrix of lat and long for trip trackDistance function
+  between.point.distances <- trackDistance(trip.matrix,     #calculate distance between each GPS point, into vector
+                                           longlat = TRUE)
+}
+
+
+speed <- function(x){
+  x$PointDist <- c(0,(between.point.distance(x)))           #dist in km
+  x$DateTime <- as.POSIXct(paste(x$Date, x$Time),           #add column of date and time recognisable by r from existing date and time columns
+                           tz="",                           #current time zone
+                           format="%d/%m/%Y %H:%M:%S")      #for date format Year/Month/Date and time format Hours:Minutes:Seconds, units = mins
+  x$TimeElapsed <- 0                                        #create empty column to fill with for loop
+  for (i in 2:NROW(x)){
+    x$TimeElapsed[i] <- difftime(x$DateTime[i], 
+                                 x$DateTime[i-1], 
+                                 units = "secs")            #time diff in mins
+  }
+  
+  (x$PointDist * 1000)/x$TimeElapsed                        #speed = dist/time. in m/s
+}
