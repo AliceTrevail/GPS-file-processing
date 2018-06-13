@@ -53,3 +53,16 @@ speed <- function(x, format="%d/%m/%Y %H:%M:%S"){
   (x$PointDist * 1000)/x$TimeElapsed                        #speed = dist/time. in m/s
 }
 
+########### Distance from colony (km) ############
+
+# calculates distance from GPS coordinates in first row of dataframe
+# when pre- & post- deployment points removed, this is effectively
+# distance from the colony
+
+
+Dist.from.colony <- function(x){
+  trip.matrix <- data.matrix(x[,c("Longitude","Latitude")], 
+                             rownames.force = NA)           #creates two column matrix of lat and long for trip trackDistance function
+  distances <- spDistsN1(trip.matrix, trip.matrix[1,],      #calculate distances between GPS points and initial GPS point
+                         longlat = TRUE)                    #in km
+}
