@@ -38,11 +38,11 @@ between.point.distance <- function(x){
 }
 
 
-speed <- function(x){
+speed <- function(x, format="%d/%m/%Y %H:%M:%S"){
   x$PointDist <- c(0,(between.point.distance(x)))           #dist in km
   x$DateTime <- as.POSIXct(paste(x$Date, x$Time),           #add column of date and time recognisable by r from existing date and time columns
                            tz="",                           #current time zone
-                           format="%d/%m/%Y %H:%M:%S")      #for date format Year/Month/Date and time format Hours:Minutes:Seconds, units = mins
+                           format=format)                   #for date format Year/Month/Date and time format Hours:Minutes:Seconds, units = mins
   x$TimeElapsed <- 0                                        #create empty column to fill with for loop
   for (i in 2:NROW(x)){
     x$TimeElapsed[i] <- difftime(x$DateTime[i], 
@@ -52,3 +52,4 @@ speed <- function(x){
   
   (x$PointDist * 1000)/x$TimeElapsed                        #speed = dist/time. in m/s
 }
+
