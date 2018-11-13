@@ -1,10 +1,3 @@
-# for a GPS track, calulate the following metrics:
-#     Speed
-#     Distance from colony
-
-########################################################################
-################ Packages ##############################################
-
 if(!"sp" %in% installed.packages())
   install.packages("sp")
 library(sp)
